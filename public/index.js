@@ -17,6 +17,9 @@ const firebaseConfig = {
 // Initialize Firebase
 initializeApp(firebaseConfig);
 
+var firebase = require('firebase');
+var firebaseui = require('firebaseui');
+
 // FirebaseUI configuration
 const uiConfig = {
     callbacks: {
