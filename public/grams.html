@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>grams</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Oswald"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <meta charset="UTF-8" />
+    <link
+      rel="icon"
+      href="https://cdn.glitch.global/fe47ca16-313a-483d-96a8-2f5a01a8a439/gramsfavicon.ico"
+      type="image/x-icon"
+    />
+    <link
+      rel="shortcut icon"
+      href="https://cdn.glitch.global/fe47ca16-313a-483d-96a8-2f5a01a8a439/gramsfavicon.ico"
+      type="image/x-icon"
+    />
+    <link
+      rel="apple-touch-icon"
+      href="https://cdn.glitch.global/fe47ca16-313a-483d-96a8-2f5a01a8a439/grams%20small.png"
+    />
+  </head>
+  <body>
+    <a href="index.html" id="set-left-link">goals</a>
+    <a href="graphs.html" id="set-right-link">graphs</a>
+
+    <h1 id="title">grams</h1>
+    <div class="container">
+      <div id="start">
+        <label for="grams-plan"></label>
+        <div class="input-group">
+          <input
+            type="number"
+            id="grams-plan"
+            min="0"
+            step="1"
+            placeholder="How many grams would you like to plan for today?"
+          />
+          <button onclick="startEating()">Set Plan</button>
+        </div>
+      </div>
+      <div id="eatInput" style="display: none">
+        <label for="grams-eaten"></label>
+        <div class="input-group">
+          <input
+            type="number"
+            id="grams-eaten"
+            min="0"
+            step="1"
+            onkeydown="if(event.keyCode===13) { eat(); document.getElementById('grams-eaten').focus(); }"
+            placeholder="How many grams did you eat?"
+          />
+          <button id="eatButton" onclick="eat()">EAT</button>
+        </div>
+      </div>
+      <div class="progress">
+        <div id="progressBar"></div>
+      </div>
+      <div class="eaten-grams-container">
+        <ul id="gramsList">
+          <!-- List of grams eaten will appear here -->
+        </ul>
+      </div>
+      <p id="gramsLeft"></p>
+      <button id="startOverButton" onclick="startOver()">Reset</button>
+    </div>
+    <script src="grams.js"></script>
+  </body>
+</html>

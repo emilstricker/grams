@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>goals</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Oswald"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <meta charset="UTF-8" />
+    <link
+      rel="icon"
+      href="https://cdn.glitch.global/fe47ca16-313a-483d-96a8-2f5a01a8a439/goalsfavicon.ico"
+      type="image/x-icon"
+    />
+    <link
+      rel="shortcut icon"
+      href="https://cdn.glitch.global/fe47ca16-313a-483d-96a8-2f5a01a8a439/goalsfavicon.ico"
+      type="image/x-icon"
+    />
+    <link
+      rel="apple-touch-icon"
+      href="https://cdn.glitch.global/fe47ca16-313a-483d-96a8-2f5a01a8a439/goals%20small.png"
+    />
+  </head>
+  <body>
+    <a href="graphs.html" id="set-left-link">graphs</a>
+    <a href="grams.html" id="set-right-link">grams</a>
+
+    <h1>goals</h1>
+    <div class="container" id="mainContainer">
+      <div class="container" id="topContainer">
+        <div id="goalFormDiv">
+          <!-- Wrapper for goalForm -->
+          <form id="goalForm">
+            <table>
+              <tr>
+                <th>Detail</th>
+                <th>Value</th>
+              </tr>
+              <tr>
+                <td>Starting Weight</td>
+                <td>
+                  <input
+                    type="number"
+                    id="startingWeight"
+                    name="startingWeight"
+                    placeholder="kg"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>Goal Weight</td>
+                <td>
+                  <input
+                    type="number"
+                    id="goalWeight"
+                    name="goalWeight"
+                    placeholder="kg"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>Start Date</td>
+                <td><input type="date" id="startDate" name="startDate" /></td>
+              </tr>
+              <tr>
+                <td>Diet Duration</td>
+                <td>
+                  <input
+                    type="number"
+                    id="dietDuration"
+                    name="dietDuration"
+                    placeholder="days"
+                  />
+                </td>
+              </tr>
+            </table>
+            <input
+              type="button"
+              value="Calculate Plan"
+              id="calcButton"
+              onclick="calculatePlan()"
+            />
+          </form>
+        </div>
+
+        <div id="planDetailsDiv" class="hidden">
+          <div id="planDetails">
+            <!-- Content for plan details will be dynamically added here -->
+          </div>
+          <button onclick="editPlan()" id="editPlanButton">Edit Plan</button>
+        </div>
+      </div>
+
+      <div id="goalTable">
+        <table id="goalWeightsTable">
+          <!-- The table will be generated dynamically -->
+        </table>
+      </div>
+    </div>
+
+    <script src="index.js"></script>
+  </body>
+</html>
