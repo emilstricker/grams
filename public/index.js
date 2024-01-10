@@ -11,6 +11,9 @@
     measurementId: "G-E6D1KYFV22"
   };
 
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+// Initialize variables
 const auth = firebase.auth();
 const database = firebase.database();
   
