@@ -17,15 +17,27 @@ const firebaseConfig = {
 // Initialize Firebase
 initializeApp(firebaseConfig);
 
-// FirebaseUI config
+// FirebaseUI configuration
 const uiConfig = {
+    callbacks: {
+        signInSuccessWithAuthResult: function(authResult, redirectUrl) {
+            // Handle sign-in success.
+            return true;
+        },
+        uiShown: function() {
+            document.getElementById('loader').style.display = 'none';
+        }
+    },
+    signInFlow: 'popup',
     signInSuccessUrl: 'goals.html',
     signInOptions: [
-        // List of OAuth providers here, e.g., firebase.auth.GoogleAuthProvider.PROVIDER_ID
+        // Specify Google as the provider
+        firebase.auth.GoogleAuthProvider.PROVIDER_ID
     ],
-    // Other config options...
+    tosUrl: 'goals.html',
+    privacyPolicyUrl: '<your-privacy-policy-url>'
 };
 
-// Initialize the FirebaseUI widget
+// Initialize the FirebaseUI Widget
 const ui = new firebaseui.auth.AuthUI(getAuth());
 ui.start('#firebaseui-auth-container', uiConfig);
