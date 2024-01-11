@@ -32,7 +32,7 @@
                     <label for="floatingInput">Last Name</label>
                 </div>
                 <button type="submit" class="btn btn-primary" style="float: right;">Create new user</button>
-                <a href="login.html"><button type="button" class="btn btn-primary me-2" style="float: left;">Sign
+                <a href="index.html"><button type="button" class="btn btn-primary me-2" style="float: left;">Sign
                         in</button></a>
             </form>
         </div>
@@ -74,7 +74,7 @@
         createUserWithEmailAndPassword(auth, emailInput.value, passwordInput.value)
             .then((credentials) => {
                 console.log("User registered successfully:", credentials);
-                window.location.href = 'goals.html'; // Redirect to goals.html
+                window.location.href = 'goals 2.html'; // Redirect to goals 2.html
             })
             .catch((error) => {
                 console.error("Registration error code:", error.code); // Log the error code

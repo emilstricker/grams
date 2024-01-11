@@ -54,7 +54,8 @@
               </td>
             </tr>
           </table>
-          <input type="button" value="Calculate Plan" id="calcButton" onclick="calculatePlan()" />
+          <input type="button" value="Calculate Plan" id="calcButton" />
+
         </form>
       </div>
 
@@ -62,7 +63,7 @@
         <div id="planDetails">
           <!-- Content for plan details will be dynamically added here -->
         </div>
-        <button onclick="editPlan()" id="editPlanButton">Edit Plan</button>
+        <button id="editPlanButton">Edit Plan</button>
       </div>
     </div>
 
@@ -72,32 +73,7 @@
       </table>
     </div>
   </div>
-
-  
-
-  <!-- Firebase App is always required and must be first -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-
-  <!-- Add Firebase products that you want to use -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-
-  <script>
-    // Your web app's Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyD942kWP9Ei1ZCntA1lqPqXukpX_LMIVeo",
-      authDomain: "grams-953c8.firebaseapp.com",
-      databaseURL: "https://grams-953c8-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "grams-953c8",
-      storageBucket: "grams-953c8.appspot.com",
-      messagingSenderId: "292028283965",
-      appId: "1:292028283965:web:44ed869a7c07c873a4be54",
-      measurementId: "G-E6D1KYFV22"
-    };
-
-    // Initialize Firebase
-    const app = firebase.initializeApp(firebaseConfig);
-  </script>
-<script src="goals.js"></script>
+  <script src="goals.js" type="module"></script>
 </body>
 
 </html>
