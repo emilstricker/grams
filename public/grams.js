@@ -1,3 +1,14 @@
+// Check if a user is logged in
+firebase.auth().onAuthStateChanged((user) => {
+  if (!user) {
+    // If no user is logged in, redirect to the login page
+    window.location.href = 'login.html';
+  }
+  // Else, continue with the page initialization
+  setTodaysDate();
+  initializePlanDetails();
+});
+
 // Global variables to store data
 let totalGrams = 0;
 let eatenGrams = [];

@@ -42,6 +42,30 @@
       </div>
     </div>
 
+  
+
+  <!-- Firebase App is always required and must be first -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+
+  <!-- Add Firebase products that you want to use -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+
+  <script>
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyD942kWP9Ei1ZCntA1lqPqXukpX_LMIVeo",
+      authDomain: "grams-953c8.firebaseapp.com",
+      databaseURL: "https://grams-953c8-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "grams-953c8",
+      storageBucket: "grams-953c8.appspot.com",
+      messagingSenderId: "292028283965",
+      appId: "1:292028283965:web:44ed869a7c07c873a4be54",
+      measurementId: "G-E6D1KYFV22"
+    };
+
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+  </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="graphs.js"></script>
   </body>
