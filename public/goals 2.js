@@ -1,24 +1,12 @@
-// Import Firestore services at the top
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
-import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
-import { getFirestore, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
+// goals2.js
 
-// Firebase configuration and initialization
-const firebaseConfig = {
-  apiKey: "AIzaSyD942kWP9Ei1ZCntA1lqPqXukpX_LMIVeo",
-  authDomain: "grams-953c8.firebaseapp.com",
-  databaseURL: "https://grams-953c8-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "grams-953c8",
-  storageBucket: "grams-953c8.appspot.com",
-  messagingSenderId: "292028283965",
-  appId: "1:292028283965:web:44ed869a7c07c873a4be54",
-  measurementId: "G-E6D1KYFV22"
-};
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
+// Import common.js to access common variables and functions
+import { db, auth, currentUser, initializeAuthState } from './common.js';
+// Initialize authentication state listener
+initializeAuthState();
 
-let currentUser = null;
+// Define page-specific logic for the 'goals2' page
+// Rest of your 'goals2' page code here
 
 document.addEventListener('DOMContentLoaded', function () {
   // Function to create a table row
@@ -66,12 +54,51 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('calcButton').style.display = 'block'; // Assuming this is your calculate button
   });
 
+  async function calculateAndStoreGoalWeights(startingWeight, goalWeight, dietDuration) {
+    let dailyLoss = (startingWeight - goalWeight) / dietDuration;
+    let goalWeightsArray = [];
+
+    for (let i = 0; i < dietDuration; i++) {
+      let dayGoalWeight = startingWeight - (dailyLoss * i);
+      goalWeightsArray.push(dayGoalWeight.toFixed(2));
+    }
+
+    // Assuming currentUser is the authenticated user
+    if (currentUser) {
+      var docRef = doc(db, "users", currentUser.uid);
+      await setDoc(docRef, { goalWeightsArray }, { merge: true }).catch(error => console.error("Error writing document: ", error));
+    }
+
+    return goalWeightsArray; // Return the calculated array
+  }
+
   // Function to clear the table
   function clearTable(tableId) {
     var table = document.getElementById(tableId);
     while (table.firstChild) {
       table.removeChild(table.firstChild);
     }
+  }
+  // Function to populate the table
+  function populateTable(userData) {
+    clearTable('resultTable');
+
+    // Calculate End Date and Daily Deficit
+    let startDateObj = new Date(userData.startDate);
+    let endDate = new Date(startDateObj);
+    endDate.setDate(startDateObj.getDate() + parseInt(userData.dietDuration));
+    let formattedEndDate = endDate.toISOString().split('T')[0];
+    let dailyDeficit = ((userData.startingWeight - userData.goalWeight) / userData.dietDuration) * 1000;
+    dailyDeficit = dailyDeficit.toFixed(0);
+
+    // Populate the table
+    var resultTable = document.getElementById('resultTable');
+    resultTable.appendChild(createRow('Starting Weight', userData.startingWeight + ' kg'));
+    resultTable.appendChild(createRow('Goal Weight', userData.goalWeight + ' kg'));
+    resultTable.appendChild(createRow('Start Date', userData.startDate));
+    resultTable.appendChild(createRow('End Date', formattedEndDate));
+    resultTable.appendChild(createRow('Diet Duration', userData.dietDuration + ' days'));
+    resultTable.appendChild(createRow('Daily Deficit', dailyDeficit + ' g'));
   }
 
   async function initializePlanDetails() {
@@ -83,62 +110,66 @@ document.addEventListener('DOMContentLoaded', function () {
         var userData = docSnap.data();
         var resultTable = document.getElementById('resultTable');
 
-        clearTable('resultTable'); // Clear the table first
+        // Calculate End Date
+        let startDate = new Date(userData.startDate);
+        let endDate = new Date(startDate);
+        endDate.setDate(startDate.getDate() + parseInt(userData.dietDuration));
 
-        // Use userData values directly instead of input elements
+        // Format End Date for display
+        let formattedEndDate = endDate.toISOString().split('T')[0];
+
+        // Calculate Daily Deficit in grams
+        let dailyDeficit = ((userData.startingWeight - userData.goalWeight) / userData.dietDuration) * 1000;
+        dailyDeficit = dailyDeficit.toFixed(0); // Optional: round to 2 decimal places
+
+        // Clear and populate the table
+        clearTable('resultTable');
         resultTable.appendChild(createRow('Starting Weight', userData.startingWeight + ' kg'));
         resultTable.appendChild(createRow('Goal Weight', userData.goalWeight + ' kg'));
-        resultTable.appendChild(createRow('Start Date', userData.startDate)); // Use userData.startDate
-        resultTable.appendChild(createRow('Diet Duration', userData.dietDuration + ' days')); // Use userData.dietDuration
-
-        // Add more rows based on userData
+        resultTable.appendChild(createRow('Start Date', userData.startDate));
+        resultTable.appendChild(createRow('End Date', formattedEndDate));
+        resultTable.appendChild(createRow('Diet Duration', userData.dietDuration + ' days'));
+        resultTable.appendChild(createRow('Daily Deficit', dailyDeficit + ' g'));
 
         // Show the result table and hide the form
         document.getElementById('resultTableDiv').style.display = 'block';
+        console.log("Show the results");
       } else {
         // No data found, show the form
         document.getElementById('goalFormDiv').style.display = 'block';
+        console.log("Show the form");
       }
     }
   }
 
   // Event listener for the calculate button
   document.getElementById('calcButton').addEventListener('click', async function () {
-    // Get form values
     var startingWeight = document.getElementById('startingWeight').value;
     var goalWeight = document.getElementById('goalWeight').value;
     var startDate = document.getElementById('startDate').value;
     var dietDuration = document.getElementById('dietDuration').value;
 
-    // Perform calculations (if applicable)
     var planResult = calculatePlan(startingWeight, goalWeight, startDate, dietDuration);
 
-    // Store the data in Firestore
     if (currentUser) {
       var docRef = doc(db, "users", currentUser.uid);
       await setDoc(docRef, { startingWeight, goalWeight, startDate, dietDuration });
     }
-    clearTable('resultTable'); // Clear the table before appending new data
 
-    // Create and append rows to the result table
-    var resultTable = document.getElementById('resultTable');
-    resultTable.appendChild(createRow('Starting Weight', startingWeight + ' kg'));
-    resultTable.appendChild(createRow('Goal Weight', goalWeight + ' kg'));
-    resultTable.appendChild(createRow('Start Date', startDate));
-    resultTable.appendChild(createRow('Diet Duration', dietDuration + ' days'));
+    // New user data object for populateTable
+    var newUserData = {
+      startingWeight: startingWeight,
+      goalWeight: goalWeight,
+      startDate: startDate,
+      dietDuration: dietDuration
+    };
 
-    // Hide the form and show the result table
-    document.getElementById('goalFormDiv').style.display = 'none';
+    populateTable(newUserData); // Use this function to populate the table
+    calculateAndStoreGoalWeights(startingWeight, goalWeight, dietDuration);
+    initializePlanDetails();
+    document.getElementById('goalFormDiv').style.display = 'block';
     document.getElementById('resultTableDiv').style.display = 'block';
-  });
+  });  // This closes the event listener for the 'calcButton'
+ 
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      console.log("Current user set:", user);
-      currentUser = user;
-      initializePlanDetails();
-    } else {
-      window.location.href = 'login.html';
-    }
-  });
-});
+}); // This closes the DOMContentLoaded event listener
