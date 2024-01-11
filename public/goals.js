@@ -1,5 +1,15 @@
-var goalWeightsArray = {}; // Object to store weights indexed by date
+// Check if a user is logged in
+firebase.auth().onAuthStateChanged((user) => {
+  if (!user) {
+    // If no user is logged in, redirect to the login page
+    window.location.href = 'login.html';
+  }
+  // Else, continue with the page initialization
+  setTodaysDate();
+  initializePlanDetails();
+});
 
+var goalWeightsArray = {}; // Object to store weights indexed by date
 let touchstartX = 0;
 let touchstartY = 0;
 let touchendX = 0;
@@ -22,16 +32,16 @@ function handleGesture() {
 }
 
 document.addEventListener('touchstart', e => {
-    touchstartX = e.changedTouches[0].screenX;
-    touchstartY = e.changedTouches[0].screenY;
-    document.body.classList.add('swipe-start'); // Add class on touch start
+  touchstartX = e.changedTouches[0].screenX;
+  touchstartY = e.changedTouches[0].screenY;
+  document.body.classList.add('swipe-start'); // Add class on touch start
 });
 
 document.addEventListener('touchend', e => {
-    touchendX = e.changedTouches[0].screenX;
-    touchendY = e.changedTouches[0].screenY;
-    handleGesture();
-    document.body.classList.remove('swipe-start'); // Remove class on touch end
+  touchendX = e.changedTouches[0].screenX;
+  touchendY = e.changedTouches[0].screenY;
+  handleGesture();
+  document.body.classList.remove('swipe-start'); // Remove class on touch end
 });
 
 
@@ -119,19 +129,19 @@ function calculatePlan() {
     <table>
       <tr><th>Detail</th><th>Value</th></tr>
       <tr><td>Starting Weight</td><td>${parseFloat(startingWeight).toFixed(
-        1
-      )} kg</td></tr>
+    1
+  )} kg</td></tr>
       <tr><td>Goal Weight</td><td>${parseFloat(goalWeight).toFixed(
-        1
-      )} kg</td></tr>
+    1
+  )} kg</td></tr>
       <tr><td>Start Date</td><td>${new Date(
-        startDate
-      ).toLocaleDateString()}</td></tr>
+    startDate
+  ).toLocaleDateString()}</td></tr>
       <tr><td>End Date</td><td>${estimatedGoalDate.toLocaleDateString()}</td></tr>
       <tr><td>Diet Duration</td><td>${dietDuration} days</td></tr>
       <tr><td>Daily Deficit</td><td>${(dailyWeightLoss * 1000).toFixed(
-        0
-      )} g</td></tr>
+    0
+  )} g</td></tr>
     </table>
     <button onclick="editPlan()" id="editButton">Edit Plan</button>
   `;
