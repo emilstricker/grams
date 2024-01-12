@@ -65,10 +65,8 @@ if (calcButton) {
 
     var planResult = calculatePlan(startingWeight, goalWeight, startDate, dietDuration);
 
-    if (currentUser) {
-      var docRef = doc(db, "users", currentUser.uid);
-      await setDoc(docRef, { startingWeight, goalWeight, startDate, dietDuration });
-    }
+    // Only call calculateAndStoreGoalWeights once
+    await calculateAndStoreGoalWeights(startingWeight, goalWeight, dietDuration);
 
     populateTable({ startingWeight, goalWeight, startDate, dietDuration });
 
@@ -120,26 +118,37 @@ async function calculateAndStoreGoalWeights(startingWeight, goalWeight, dietDura
   let goalWeightsArray = [];
 
   for (let i = 0; i < dietDuration; i++) {
-    let dayGoalWeight = startingWeight - (dailyLoss * i);
-    goalWeightsArray.push(dayGoalWeight.toFixed(2));
+      let dayGoalWeight = startingWeight - (dailyLoss * i);
+      goalWeightsArray.push(dayGoalWeight.toFixed(2));
   }
+
+  console.log("Calculated Goal Weights Array before storing:", goalWeightsArray);
 
   if (currentUser) {
-    var docRef = doc(db, "users", currentUser.uid);
-    await setDoc(docRef, { goalWeightsArray }, { merge: true }).catch(error => console.error("Error writing document: ", error));
+      var docRef = doc(db, "users", currentUser.uid);
+      try {
+          await setDoc(docRef, { goalWeightsArray }, { merge: true });
+          console.log("Goal weights array stored successfully.");
+      } catch (error) {
+          console.error("Error writing document: ", error);
+      }
   }
 
-  return goalWeightsArray;
+  return goalWeightsArray; // Return the array for use outside the function
 }
+
 
 async function calculateDailyGrams(date, morningWeight) {
   try {
+    console.log("Calculating daily grams for date:", date, "and morning weight:", morningWeight);
     const goalWeight = await getGoalWeightForDate(date);
+
     if (goalWeight) {
+      console.log("Found goal weight:", goalWeight, "for date:", date);
       const dailyGrams = (goalWeight - morningWeight) * 1000;
       return dailyGrams >= 0 ? dailyGrams : 0;
     } else {
-      console.log('Goal weight not found for the selected date');
+      console.log('Goal weight not found for the selected date:', date);
       return null;
     }
   } catch (error) {
@@ -148,11 +157,43 @@ async function calculateDailyGrams(date, morningWeight) {
   }
 }
 
-function getGoalWeightForDate(date) {
-  // Logic to get goal weight for the given date
-  // Placeholder function, needs actual implementation based on your data structure
-  return null;
+
+async function getGoalWeightForDate(date) {
+  if (!currentUser) {
+    console.log('No user logged in.');
+    return null;
+  }
+
+  const docRef = doc(db, "users", currentUser.uid);
+
+  try {
+    const docSnap = await getDoc(docRef);
+    console.log("Fetched Document:", docSnap.data());
+
+    if (docSnap.exists() && docSnap.data().goalWeightsArray) {
+      const goalWeightsArray = docSnap.data().goalWeightsArray;
+
+      const selectedDate = new Date(date).setHours(0, 0, 0, 0);
+      const startDate = new Date(docSnap.data().startDate).setHours(0, 0, 0, 0);
+
+      const dayIndex = Math.floor((selectedDate - startDate) / (1000 * 60 * 60 * 24));
+
+      if (dayIndex >= 0 && dayIndex < goalWeightsArray.length) {
+        return goalWeightsArray[dayIndex];
+      } else {
+        console.log('Goal weight not found for the selected date, index:', dayIndex);
+        return null;
+      }
+    } else {
+      console.log('No goal weights array found or document does not exist.');
+      return null;
+    }
+  } catch (error) {
+    console.error('Error getting goal weight:', error);
+    return null;
+  }
 }
+
 
 
 function createRow(detail, value) {
